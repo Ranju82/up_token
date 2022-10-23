@@ -1,0 +1,13 @@
+body{
+  text-align: center;
+}
+
+.center {
+  padding: 15px;
+  position: absolute;
+  top: 40%;
+  left: 40%;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+}
