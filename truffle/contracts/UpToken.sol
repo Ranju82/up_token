@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.14;
+pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
@@ -21,6 +21,10 @@ contract UpToken is ERC20,Pausable{
       function _mint(address account, uint256 amount) internal virtual override whenNotPaused {
         require(ERC20.totalSupply() + amount <= cap(), "ERC20Capped: cap exceeded");
         super._mint(account, amount);
+    }
+
+    function getBaL()public view returns(uint256){
+        return balanceOf(msg.sender);
     }
     
     function _beforeTokenTransfer(

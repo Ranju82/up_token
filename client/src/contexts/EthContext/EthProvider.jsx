@@ -7,22 +7,32 @@ function EthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const init = useCallback(
-    async artifact => {
-      if (artifact) {
+    async (upTokenArtifact,upTokenSaleArtifact) => {
+      if (upTokenArtifact && upTokenSaleArtifact) {
         const web3 = new Web3(Web3.givenProvider || "ws://localhost:7545");
         const accounts = await web3.eth.requestAccounts();
         const networkID = await web3.eth.net.getId();
-        const { abi } = artifact;
-        let address, contract;
+        
+        let upTokenAddress,upTokenSaleAddress, upTokenContract,upTokenSaleContract;
         try {
-          address = artifact.networks[networkID].address;
-          contract = new web3.eth.Contract(abi, address);
+          const { abi } = upTokenArtifact;
+          upTokenAddress = upTokenArtifact.networks[networkID].address;
+          upTokenContract = new web3.eth.Contract(abi, upTokenAddress);
         } catch (err) {
           console.error(err);
         }
+
+        try {
+          const { abi } = upTokenSaleArtifact;
+          upTokenSaleAddress = upTokenSaleArtifact.networks[networkID].address;
+          upTokenSaleContract = new web3.eth.Contract(abi, upTokenSaleAddress);
+        } catch (err) {
+          console.error(err);
+        }
+
         dispatch({
           type: actions.init,
-          data: { artifact, web3, accounts, networkID, contract }
+          data: { upTokenSaleAddress, web3, accounts, networkID, upTokenContract, upTokenSaleContract}
         });
       }
     }, []);
@@ -30,8 +40,9 @@ function EthProvider({ children }) {
   useEffect(() => {
     const tryInit = async () => {
       try {
-        const artifact = require("../../contracts/UpToken.json");
-        init(artifact);
+        const upTokenArtifact = require("../../contracts/UpToken.json");
+        const upTokenSaleArtifact = require("../../contracts/UpTokenSale.json");
+        init(upTokenArtifact,upTokenSaleArtifact);
       } catch (err) {
         console.error(err);
       }
